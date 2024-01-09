@@ -1,0 +1,67 @@
+Copyrights of dependencies used by the ExCAT service:
+
+github.com/golang/protobuf:
+Copyright 2010 The Go Authors.  All rights reserved.
+
+golang.org/x/term:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+google.golang.org/protobuf:
+Copyright (c) 2018 The Go Authors. All rights reserved.
+
+github.com/evanphx/json-patch/v5:
+Copyright (c) 2014, Evan Phoenix
+All rights reserved.
+
+github.com/fsnotify/fsnotify:
+Copyright © 2012 The Go Authors. All rights reserved.
+
+github.com/gogo/protobuf:
+Copyright (c) 2013, The GoGo Authors. All rights reserved.
+
+github.com/google/uuid:
+Copyright (c) 2009,2014 Google Inc. All rights reserved.
+
+golang.org/x/net:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+golang.org/x/sys:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+github.com/pkg/errors:
+Copyright (c) 2015, Dave Cheney <dave@cheney.net>
+All rights reserved.
+
+github.com/spf13/pflag:
+Copyright (c) 2012 Alex Ogier. All rights reserved.
+
+golang.org/x/text:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+golang.org/x/time:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+sigs.k8s.io/json:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+sigs.k8s.io/yaml:
+Copyright (c) 2014 Sam Ghods
+
+github.com/davecgh/go-spew:
+Copyright (c) 2012-2016 Dave Collins <dave@davec.name>
+
+github.com/google/go-cmp:
+Copyright (c) 2017 The Go Authors. All rights reserved.
+
+github.com/imdario/mergo:
+Copyright (c) 2013 Dario Castañé. All rights reserved.
+
+github.com/munnerz/goautoneg:
+Copyright (c) 2011, Open Knowledge Foundation Ltd.
+All rights reserved.
+
+golang.org/x/oauth2:
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+gopkg.in/inf.v0:
+Copyright (c) 2012 Péter Surányi. Portions Copyright (c) 2009 The Go

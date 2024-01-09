@@ -1,0 +1,13 @@
+{{- if .Values.admission.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "excat.fullname" . }}-admission
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - patch
+{{- end }}

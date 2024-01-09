@@ -1,0 +1,11 @@
+goversion: &goversion "1.21.5"
+
+run:
+  issues-exit-code: 1
+  go: *goversion
+output:
+  sort-results: true
+issues:
+  max-issues-per-linter: 0
+  # uncomment for local usage
+  #fix: true 

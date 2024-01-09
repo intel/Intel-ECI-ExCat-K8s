@@ -1,0 +1,22 @@
+{{- if .Values.admission.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "excat.fullname" . }}-admission
+  labels:
+    {{- if .Values.admission.labels }}
+    {{- toYaml .Values.admission.labels | nindent 4 }}
+    {{- end }}
+  {{- with .Values.admission.rbac.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "excat.fullname" . }}-admission
+subjects:
+- kind: ServiceAccount
+  name: {{ include "excat-admission.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}
