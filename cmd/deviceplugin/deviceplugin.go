@@ -17,6 +17,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 )
 
@@ -69,6 +70,8 @@ func NewExcatDevicePlugin(
 
 func main() {
 	initLogger()
+
+	done := make(chan struct{})
 
 	// get initial list of devices
 	log.Debug().Msg("Get initial buffer list")
@@ -150,9 +153,7 @@ func main() {
 		}
 	}
 
-	// stay in main
-	for {
-	}
+	<-done
 }
 
 // initLogger initializes the logger for the device plugin
@@ -253,11 +254,19 @@ func (b *ExcatDevicePlugin) Serve() error {
 // connection until the connection is successful
 func (b *ExcatDevicePlugin) dial(socket string, timeout time.Duration) (*grpc.ClientConn, error) {
 	log.Debug().Msgf("Connect to gRPC server at socket %v.", socket)
-	conn, err := grpc.Dial(socket, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(timeout),
-		grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
-			return net.DialTimeout("unix", addr, timeout) //nolint:wrapcheck // ok
-		}))
-	if err != nil { //nolint:wsl  // err check cuddled
+	conn, err := grpc.Dial(
+		socket,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+		grpc.WithContextDialer(
+			func(ctx context.Context, addr string) (net.Conn, error) {
+				if deadline, ok := ctx.Deadline(); ok {
+					return net.DialTimeout("unix", addr, time.Until(deadline))
+				}
+				return net.DialTimeout("unix", addr, timeout)
+			}),
+	)
+	if err != nil {
 		return nil, fmt.Errorf("failed to connect to gRPC server: %w", err)
 	}
 
