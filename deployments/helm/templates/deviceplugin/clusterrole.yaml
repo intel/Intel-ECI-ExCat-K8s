@@ -1,0 +1,13 @@
+{{- if .Values.devicePlugin.rbac.create -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "excat.fullname" . }}-deviceplugin
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - patch
+{{- end }}

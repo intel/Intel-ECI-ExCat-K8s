@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "excat.fullname" . }}-admission
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.admission.annotations }}
+  annotations:
+    {{- toYaml .Values.admission.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    component: admission
+    {{- include "excat.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.admission.replicaCount }}
+  selector:
+    matchLabels:
+      component: admission
+      {{- include "excat.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.admission.podAnnotations }}
+        {{- toYaml .Values.admission.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        component: admission
+        {{- include "excat.labels" . | nindent 8 }}
+        {{- if .Values.admission.podLabels }}
+        {{- toYaml .Values.admission.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "excat-admission.serviceAccountName" . }}
+      {{- if .Values.admission.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.admission.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.admission.tolerations }}
+      tolerations:
+{{ toYaml .Values.admission.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.admission.image.repository }}:{{ .Values.admission.image.tag | default .Chart.AppVersion }}"
+        command: ["/excatadmission"]
+        args:
+         - -tls-cert-name=tls.crt
+         - -tls-private-key-name=tls.key
+         - -tls-cert-dir={{ .Values.admission.certs.mountPath }}
+         - -port=9443
+        imagePullPolicy: {{ .Values.admission.image.pullPolicy }}
+        ports:
+        - name: excatadm-api
+          containerPort: 9443
+          protocol: TCP
+        volumeMounts:
+        - name: excatadmission-tls-certs
+          mountPath: {{ .Values.admission.certs.mountPath }}
+          readOnly: true
+      volumes:
+      - name: excatadmission-tls-certs
+        secret:
+          secretName:
+            {{- include "excatadmission.tlsSecretName" . | nindent 12 }}
+      {{- with .Values.admission.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always

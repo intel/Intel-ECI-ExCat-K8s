@@ -1,0 +1,37 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ include "excat.fullname" . }}-admission
+  labels:
+    {{- if .Values.admission.labels }}
+    {{- toYaml .Values.admission.labels | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if eq .Values.admission.tlsSecret.certSource "cert-manager" -}}
+    {{- toYaml .Values.admission.tlsSecret.certmanagerAnnotations | nindent 4 }}
+    {{- end }}
+webhooks:
+- name: {{ ( printf "%s-admission.%s.svc" (include "excat.fullname" .) .Release.Namespace ) }}
+  objectSelector:
+    matchLabels:
+      excat: "yes"
+  namespaceSelector:
+    matchExpressions:
+    - key: role
+      operator: NotIn
+      values: ["kube-system"]
+  sideEffects: None
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      name: {{ include "excat.fullname" . | nindent 8 }}-admission
+      namespace: {{ .Release.Namespace }}
+      path: "/mutate"
+    {{- if eq .Values.admission.tlsSecret.certSource "file" }}
+    caBundle: {{ .Files.Get .Values.admission.tlsSecret.caFileName | b64enc | indent 6}}
+    {{- end }}
+  rules:
+  - operations: [ "CREATE" ]
+    apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]

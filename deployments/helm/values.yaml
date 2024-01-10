@@ -1,0 +1,107 @@
+# Copyright (C) 2023 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# name overrides
+nameOverride: ""
+fullnameOverride: ""
+
+admission:
+  # number of replicas
+  replicaCount: 1
+
+  # csl-excat-admission image for control-plane
+  image:
+    repository: localhost/csl-excat-admission
+    pullPolicy: IfNotPresent
+    tag: "v0.1.0"
+
+  # daemonset pod update strategy
+  updateStrategy:
+    type: RollingUpdate
+
+  # path to certs folder
+  certs:
+    mountPath: "/run/secrets/tls"
+
+  # tls configuration for the admission controller  
+  tlsSecret:
+    # Specifies whether a secret with the certificate should be created.
+    # set to false if a cert-manager is creating it
+    create: true
+    # The name of the secret containing the tls certificates tls.crt and tls.key
+    # If not set and create is true, a name is generated using the fullname template
+    # name: "excat-tls-secret"
+    name: ""
+    # file or cert-manager
+    certSource: "file"
+    # Cert and Private key to store in the secret
+    # Self signed certificate can be generated using ./gencerts.sh [destination] [name] [namespace]
+    # ./gencerts.sh certs excatadmission default
+    certFileName: "certs/excatadmission-tls.crt"
+    keyFileName: "certs/excatadmission-tls.key"
+    caFileName: "certs/ca.crt"
+    # Annotation to be added for mutating configuration to inject ca certificate in case of cert-manager
+    certmanagerAnnotations:
+      cert-manager.io/inject-ca-from: "excat/excat-selfsigned-ca"
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+
+  service:
+    name: "excat"
+    type: ClusterIP
+    port: 443
+    annotations: {}
+
+  rbac:
+    create: true
+    name: ""
+
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+    kubernetes.io/arch: amd64
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+  affinity: {}
+
+devicePlugin:
+  # number of replicas
+  replicaCount: 1
+
+  # csl-excat-deviceplugin image for daemonset
+  image:
+    repository: localhost/csl-excat-deviceplugin
+    pullPolicy: IfNotPresent
+    tag: "v0.1.0"
+
+  # daemonset pod update strategy
+  updateStrategy:
+    type: RollingUpdate
+
+  # service account for patching node labels
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+
+  # clusterrole for patching node labels
+  rbac:
+    create: true
+    name: ""
+
+  # additional options to add to the daemonset pods
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector:
+    excat: "yes"
+  tolerations: []
+  affinity: {}

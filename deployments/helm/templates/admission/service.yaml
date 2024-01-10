@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "excat.fullname" . }}-admission
+  {{- if .Values.admission.service.annotations }}
+  annotations:
+    {{- toYaml .Values.admission.service.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "excat.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.admission.service.type }}
+  ports:
+    - port: {{ .Values.admission.service.port }}
+      targetPort: excatadm-api
+      protocol: TCP
+  selector:
+    {{- include "excat.selectorLabels" . | nindent 4 }}

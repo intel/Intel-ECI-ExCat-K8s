@@ -1,0 +1,71 @@
+# Copyright (C) 2022 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "excat.fullname" . }}-deviceplugin
+  namespace: {{ .Release.namespace }}
+  labels:
+    {{- include "excat.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "excat.selectorLabels" . | nindent 6 }}
+  {{- with .Values.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "excat.templateLabels" . | nindent 8 }}
+    spec:
+      # Mark this pod as a critical add-on; when enabled, the critical add-on
+      # scheduler reserves resources for critical add-on pods so that they can
+      # be rescheduled after a failure.
+      # See https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
+      priorityClassName: "system-node-critical"
+      serviceAccountName: {{ include "excat.devicePlugin.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.devicePlugin.podSecurityContext | nindent 8 }}
+      containers:
+      - image: {{ .Values.devicePlugin.image.repository }}:{{ .Values.devicePlugin.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.devicePlugin.image.pullPolicy }}
+        name: excat-ctr
+        securityContext:
+          privileged: true
+        {{- with .Values.devicePlugin.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        volumeMounts:
+          - name: device-plugin
+            mountPath: /var/lib/kubelet/device-plugins
+          - name: resctrl
+            mountPath: /sys/fs/resctrl
+            readOnly: true
+      volumes:
+        - name: device-plugin
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: resctrl
+          hostPath:
+            path: /sys/fs/resctrl
+      {{- with .Values.devicePlugin.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.devicePlugin.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.devicePlugin.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
