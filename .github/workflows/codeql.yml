@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request: null
 permissions:
   contents: read
 jobs:
@@ -18,19 +18,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'go' ]
+        language:
+          - go
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@v2
-      with:
-        egress-policy: audit
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2 # v2.22.9
-      with:
-        languages: ${{ matrix.language }}
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@004c5de30b6423267685b897a3d595e944f7fed5 # v2.20.2
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2 # v2.22.9
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@004c5de30b6423267685b897a3d595e944f7fed5
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2

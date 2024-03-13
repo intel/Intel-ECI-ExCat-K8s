@@ -3,36 +3,29 @@ on:
   push:
     branches:
       - main
-  pull_request:
-
+  pull_request: null
 jobs:
-
   build:
     runs-on:
       - ubuntu-latest
-      
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: 1.21.5
-
-    - name: Build
-      run: make build
-
-    - name: Test
-      run: make test
-
-    - name: Check dependency licenses
-      shell: bash
-      run: |
-        go install github.com/uw-labs/lichen@latest
-        lichen --config=.github/config/lichen_config.yaml build/admission build/deviceplugin | tee lichen.txt
-
-    - name: Upload license scan result
-      uses: actions/upload-artifact@v4
-      with:
-        name: License list
-        path: lichen.txt
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21.5
+      - name: Build
+        run: make build
+      - name: Test
+        run: make test
+      - name: Check dependency licenses
+        shell: bash
+        run: |
+          go install github.com/uw-labs/lichen@latest
+          lichen --config=.github/config/lichen_config.yaml \
+            build/admission build/deviceplugin | tee lichen.txt
+      - name: Upload license scan result
+        uses: actions/upload-artifact@v4
+        with:
+          name: License list
+          path: lichen.txt
