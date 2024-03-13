@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on:
       - ubuntu-latest
+      
     steps:
     - uses: actions/checkout@v4
 
@@ -28,4 +29,10 @@ jobs:
       shell: bash
       run: |
         go install github.com/uw-labs/lichen@latest
-        lichen --config=.github/workflows/config/lichen_config.yaml build/admission build/deviceplugin | tee lichen.txt
+        lichen --config=.github/config/lichen_config.yaml build/admission build/deviceplugin | tee lichen.txt
+
+    - name: Upload license scan result
+      uses: actions/upload-artifact@v4
+      with:
+        name: License list
+        path: lichen.txt
