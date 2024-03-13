@@ -25,6 +25,7 @@ jobs:
       run: make test
 
     - name: Check dependency licenses
+      shell: bash
       run: |
         go install github.com/uw-labs/lichen@latest
-        make bom
+        lichen --config=.github/workflows/config/lichen_config.yaml build/admission build/deviceplugin | tee lichen.txt
