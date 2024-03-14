@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-  pull_request: null
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -28,10 +28,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2
+        uses: github/codeql-action/init@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2 # v2.22.9
         with:
           languages: ${{ matrix.language }}
       - name: Autobuild
-        uses: github/codeql-action/autobuild@004c5de30b6423267685b897a3d595e944f7fed5
+        uses: github/codeql-action/autobuild@004c5de30b6423267685b897a3d595e944f7fed5 # v2.20.2
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2
+        uses: github/codeql-action/analyze@c0d1daa7f7e14667747d73a7dbbe8c074bc8bfe2 # v2.22.9
