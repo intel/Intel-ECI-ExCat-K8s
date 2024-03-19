@@ -8,4 +8,4 @@ output:
 issues:
   max-issues-per-linter: 0
   # uncomment for local usage
-  #fix: true 
+  #fix: true
