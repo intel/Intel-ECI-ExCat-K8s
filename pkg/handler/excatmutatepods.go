@@ -71,7 +71,7 @@ func mutateExcatPod(pod *corev1.Pod) error {
 	}
 
 	for annotationKey, annotationValue := range pod.GetAnnotations() {
-		reg := regexp.MustCompile("^intel.com/excat-l[2,3]$")
+		reg := regexp.MustCompile(`^intel\.com/excat-l[2,3]$`)
 		matched := reg.MatchString(annotationKey)
 
 		if !matched {
