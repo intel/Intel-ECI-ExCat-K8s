@@ -1,8 +1,9 @@
-goversion: &goversion "1.21.5"
+goversion: &goversion "1.22.2"
 
 run:
   issues-exit-code: 1
   go: *goversion
+  timeout: 5m
 output:
   sort-results: true
 issues:
