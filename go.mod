@@ -1,6 +1,6 @@
 module github.com/csl-svc/excat
 
-go 1.22.2
+go 1.23.2
 
 replace gopkg.in/yaml.v3 => gopkg.in/yaml.v3 v3.0.1
 
