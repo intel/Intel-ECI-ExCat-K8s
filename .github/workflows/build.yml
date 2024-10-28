@@ -4,8 +4,11 @@ on:
     branches:
       - main
   pull_request:
+permissions: read-all
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on:
       - ubuntu-latest
     steps:
