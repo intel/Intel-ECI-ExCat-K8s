@@ -1,9 +1,13 @@
 ## THIS PROJECT IS ARCHIVED
 
-Intel will not provide or guarantee development of or support for this project, including but not limited to, maintenance, bug fixes, new releases or updates. 
-Patches to this project are no longer accepted by Intel.  
-If you have an ongoing need to use this project, are interested in independently developing it, or would like to maintain patches for the community, please create your own fork of the project.  
-contact: webadmin@linux.intel.com
+Intel will not provide or guarantee development of or support for this project, including but not limited to, maintenance, bug fixes, new releases or updates.
+
+Patches to this project are no longer accepted by Intel.
+
+This project has been identified as having known security issues.
+
+Contact: webadmin@linux.intel.com
+
 # Castle Lake (CSL): Exclusive Cache Allocation Technology (ExCAT)
 The Exclusive Cache Allocation Technology (ExCAT) service is part of Castle Lake (CSL) and enables the usage of Intel's Cache Allocation Technology (CAT) for workloads that are orchestrated within a Kubernetes cluster. A user can request a cache buffer to be available exclusively for a workload. For that, an annotation is added to the Pod Spec with a key that determines the cache level, and the value specifying the size. The workload is then scheduled on a worker node that provides a matching cache buffer. The buffers have to be configured on the worker nodes before they can be used by the service. More details about CAT in general and how to use it in the context of the ExCAT service can be found in the following sections.
 
